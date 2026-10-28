@@ -46,9 +46,10 @@ public class App extends Application {
         menuBox.setId("MenuBar");
         
         
-        VBox principal = new VBox(menuBox, paginaApp);        
-        //BorderPane principal = new BorderPane(new  Pagina1Pane(), new Pagina2Pane(), label, vBox);
+        VBox principal = new VBox(menuBox, paginaApp);
         var scene = new Scene(principal, 640, 480);
+        scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+        
         stage.setScene(scene);
         stage.show();
     }
