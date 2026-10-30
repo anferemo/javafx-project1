@@ -17,7 +17,7 @@ public class ProductController {
     private List<Product> productList;
 
     public ProductController() {
-        productList = new ArrayList<>();
+        productList = new ArrayList<>();        
     }
 
     public List<Product> getProductList() {

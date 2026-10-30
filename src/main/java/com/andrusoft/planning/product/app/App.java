@@ -2,18 +2,15 @@ package com.andrusoft.planning.product.app;
 
 import com.andrusoft.planning.product.app.view.ProductoWindow;
 import com.andrusoft.planning.product.app.view.Pagina2Pane;
-import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -24,11 +21,26 @@ import javafx.stage.Stage;
  * JavaFX App
  */
 public class App extends Application {
+    
+    private static final Logger logger = Logger.getLogger(App.class.getName());
 
     @Override
     public void start(Stage stage) {
         var javaVersion = SystemInfo.javaVersion();
         var javafxVersion = SystemInfo.javafxVersion();
+        
+        DatabaseConnection database= null;
+        
+        try {
+            database = new DatabaseConnection();
+            if(database.schemaExists()) {
+                logger.log(Level.INFO, null, "Esquema existe");
+            } else {
+                logger.log(Level.INFO, null, "Esquema NO existe");
+            }
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, null, ex);
+        }
 
         var label = new Label("Hello, JavaFX " + javafxVersion + ", running on Java " + javaVersion + ".");
         label.setId("Principal");
