@@ -4,22 +4,19 @@
  */
 package com.andrusoft.planning.product.app;
 
+import com.andrusoft.planning.product.app.dao.ProductDAO;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.h2.jdbcx.JdbcDataSource;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 /**
  *
  * @author andrusoft
  */
-public class DatabaseConnection {
+public final class DatabaseConnection {
     
     private static final String DB_URL = "jdbc:h2:./data/mydatabase";
     private static final String USER = "sa";
@@ -27,7 +24,7 @@ public class DatabaseConnection {
     
     private static final Logger logger = Logger.getLogger(DatabaseConnection.class.getName());
     
-    private Connection connection;
+    private static Connection connection;
 
     public DatabaseConnection() {
         try {
@@ -39,7 +36,7 @@ public class DatabaseConnection {
     
     
     
-    public Connection getDatabaseConnection() throws SQLException {
+    public static Connection getDatabaseConnection() throws SQLException {
         return DriverManager.getConnection(DB_URL, USER, PASSWORD);
     }
     
@@ -47,7 +44,7 @@ public class DatabaseConnection {
     logger.info("Checking for Schema existence");      
     try {
       Statement st = connection.createStatement();      
-      st.executeQuery("select count(*) from employee");
+      st.executeQuery("select count(*) from product");
       logger.info("Schema exists");      
     } catch (SQLException ex) {
       logger.info("Existing DB not found will create a new one");
@@ -57,15 +54,17 @@ public class DatabaseConnection {
     return true;
   }
 
-    public Connection getConnection() {
+    public static Connection getConnection() throws SQLException {
+        if (connection==null || connection.isClosed()) {
+            connection = getDatabaseConnection();
+        }
         return connection;
     }
     
-    public void createSchema(Connection con) throws SQLException {
-    logger.info("Creating schema");
-    Statement st = con.createStatement();
-    String table = "create table employee(id integer, name varchar(64))";
-    st.executeUpdate(table);
-    logger.info("Created schema");
-  }
+    public void createSchema() throws SQLException {
+        logger.info("Creating schema");
+        ProductDAO daoProd = new ProductDAO();
+        daoProd.createTable();        
+        logger.info("Created schema");
+    }
 }

@@ -4,6 +4,7 @@
  */
 package com.andrusoft.planning.product.app.controller;
 
+import com.andrusoft.planning.product.app.dao.ProductDAO;
 import com.andrusoft.planning.product.app.model.Product;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,13 +16,15 @@ import java.util.List;
 public class ProductController {
     
     private List<Product> productList;
+    private ProductDAO productDAO;
 
     public ProductController() {
-        productList = new ArrayList<>();        
+        productList = new ArrayList<>();
+        productDAO = new ProductDAO();
     }
 
     public List<Product> getProductList() {
-        return productList;
+        return productDAO.queryAllProducts();       
     }
 
     public void setProductList(List<Product> productList) {
@@ -29,7 +32,7 @@ public class ProductController {
     }
     
     public void addProduct(Product product) {
-        this.productList.add(product);
+        productDAO.saveProduct(product);
     }
 
     

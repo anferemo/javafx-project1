@@ -6,3 +6,12 @@
     -fx-background-color: green;
     -fx-text-fill: yellow; 
 }
+#ProductWindow {
+    -fx-padding: 15;
+    -fx-spacing: 10;
+}
+
+#productPane {
+    -fx-fill: red;
+    -fx-grid-lines-visible: true;
+}

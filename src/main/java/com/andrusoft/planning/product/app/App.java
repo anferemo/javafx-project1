@@ -34,12 +34,13 @@ public class App extends Application {
         try {
             database = new DatabaseConnection();
             if(database.schemaExists()) {
-                logger.log(Level.INFO, null, "Esquema existe");
-            } else {
-                logger.log(Level.INFO, null, "Esquema NO existe");
+                logger.log(Level.INFO, "Esquema existe");
+            } else {                
+                logger.log(Level.INFO, "Esquema NO existe");
+                database.createSchema();
             }
         } catch (Exception ex) {
-            logger.log(Level.SEVERE, null, ex);
+            logger.log(Level.SEVERE, ex.getMessage());
         }
 
         var label = new Label("Hello, JavaFX " + javafxVersion + ", running on Java " + javaVersion + ".");

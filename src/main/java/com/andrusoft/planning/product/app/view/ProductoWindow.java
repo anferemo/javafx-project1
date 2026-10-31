@@ -6,15 +6,15 @@ package com.andrusoft.planning.product.app.view;
 
 import com.andrusoft.planning.product.app.controller.ProductController;
 import com.andrusoft.planning.product.app.model.Product;
-import java.util.ArrayList;
-import java.util.List;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventType;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
@@ -22,11 +22,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
@@ -38,51 +34,59 @@ public class ProductoWindow extends VBox{
     
     private ProductController controller;
     private Button btnGuardar;
+    private Button btnCreateProductDialog;
     private TextField inputNombre;
     private TableView<Product> tabla;
+    private Dialog productDialog;
+    private Alert alert;
     
     public ProductoWindow() {
         super();
         this.controller=new ProductController();
         var contentPane = createProductTable();
+        this.btnCreateProductDialog = new Button("Crear Producto");
         var label = new Label("Maestro de Productos");
-        Text textoNombre = new Text("Nombre Producto: ");
         this.inputNombre = new TextField();
-        var boxProductCreate = new HBox(textoNombre, inputNombre);        
-        createGuardarProdutoButton();
+        var boxProductCreate = new VBox(label, btnCreateProductDialog);
+        this.setId("ProductWindow");
+        showGuardarProductoAction();
+        createGuardarProductoDialog();
         
         super.setPadding(new Insets(5, 10, 10, 10));        
         super.setAlignment(Pos.TOP_LEFT);
         
-        
-        //hbox
-        super.getChildren().add(label);        
         super.getChildren().add(boxProductCreate);
-        super.getChildren().add(btnGuardar);
         super.getChildren().add(contentPane);
         super.setVisible(false);
         super.setId("ProductWindow");        
         
     }
 
-    private void createGuardarProdutoButton() {
-        Dialog<String> dialog = new Dialog<>();        
-        this.btnGuardar = new Button("Crear Producto");
+    private void createGuardarProductoDialog() {
+        this.productDialog = new Dialog<>();         
+        this.btnGuardar = new Button("Guardar");
         this.btnGuardar.setId("guardarProductoBtn");
-        this.btnGuardar.setOnAction((ActionEvent action) -> {
-            dialog.getDialogPane().getButtonTypes().removeAll();
-            if (this.inputNombre.getText().isBlank()) {
-                dialog.setContentText("No hay nombre para registrar");
-                dialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);                
-            } else {
-                controller.addProduct(new Product(this.inputNombre.getText(),""));                
-                dialog.setContentText("Producto: " +this.inputNombre.getText() + " Creado");
-                dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
-                updateProductTable();
+        this.productDialog.getDialogPane().setHeaderText("Crear Producto");        
+        this.productDialog.getDialogPane().setContent(createProductForm());
+        this.productDialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        this.productDialog.getDialogPane().setCenterShape(true);        
+        this.productDialog.setResultConverter(dialogBtn -> {
+            if(dialogBtn==ButtonType.OK) {
+                if (this.inputNombre.getText().isBlank()) {
+                    alert = new Alert(AlertType.ERROR);
+                    alert.setContentText("No hay nombre para registrar");                    
+                } else {
+                    controller.addProduct(new Product(this.inputNombre.getText(),""));                
+                    alert = new Alert(AlertType.INFORMATION);
+                    alert.setContentText("Producto: " +this.inputNombre.getText() + " Creado");                    
+                    updateProductTable();
+                }
+                alert.showAndWait();
+            } else  if (dialogBtn==ButtonType.CANCEL){
+                this.productDialog.close();
             }
-            dialog.show();
-        });
-        
+            return null;
+        });        
     }
 
     private void updateProductTable() {
@@ -99,6 +103,21 @@ public class ProductoWindow extends VBox{
         this.tabla.getColumns().addAll(nombreColumn);
         updateProductTable();        
         return tabla;
+    }
+    
+    private Node createProductForm() {        
+        HBox newProductBox = new HBox();                
+        newProductBox.setAlignment(Pos.CENTER);
+        newProductBox.getChildren().add(new Text("Nombre Producto: "));
+        newProductBox.getChildren().add(this.inputNombre);
+        newProductBox.setId("productPane");        
+        return newProductBox;        
+    }
+
+    private void showGuardarProductoAction() {
+        this.btnCreateProductDialog.setOnAction((ActionEvent action) -> {
+            this.productDialog.show();
+        });
     }
     
 }
