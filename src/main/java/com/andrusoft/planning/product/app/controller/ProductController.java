@@ -24,8 +24,7 @@ public class ProductController {
     }
 
     public List<Product> getProductList() {
-        return productDAO.queryAllProducts();
-        //return productList;
+        return productDAO.queryAllProducts();       
     }
 
     public void setProductList(List<Product> productList) {
@@ -33,7 +32,6 @@ public class ProductController {
     }
     
     public void addProduct(Product product) {
-        //this.productList.add(product);
         productDAO.saveProduct(product);
     }
 

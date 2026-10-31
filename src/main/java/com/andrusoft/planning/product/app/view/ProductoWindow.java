@@ -22,7 +22,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
@@ -63,12 +63,13 @@ public class ProductoWindow extends VBox{
     }
 
     private void createGuardarProductoDialog() {
-        this.productDialog = new Dialog<>();        
+        this.productDialog = new Dialog<>();         
         this.btnGuardar = new Button("Guardar");
         this.btnGuardar.setId("guardarProductoBtn");
-        this.productDialog.setGraphic(createProductForm());
+        this.productDialog.getDialogPane().setHeaderText("Crear Producto");        
+        this.productDialog.getDialogPane().setContent(createProductForm());
         this.productDialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-        
+        this.productDialog.getDialogPane().setCenterShape(true);        
         this.productDialog.setResultConverter(dialogBtn -> {
             if(dialogBtn==ButtonType.OK) {
                 if (this.inputNombre.getText().isBlank()) {
@@ -76,7 +77,7 @@ public class ProductoWindow extends VBox{
                     alert.setContentText("No hay nombre para registrar");                    
                 } else {
                     controller.addProduct(new Product(this.inputNombre.getText(),""));                
-                    alert = new Alert(AlertType.CONFIRMATION);
+                    alert = new Alert(AlertType.INFORMATION);
                     alert.setContentText("Producto: " +this.inputNombre.getText() + " Creado");                    
                     updateProductTable();
                 }
@@ -105,10 +106,12 @@ public class ProductoWindow extends VBox{
     }
     
     private Node createProductForm() {        
-        GridPane gridPane = new GridPane();
-        gridPane.add(new Text("Nombre Producto: "), 0, 0);
-        gridPane.add(this.inputNombre, 1, 0);        
-        return gridPane;
+        HBox newProductBox = new HBox();                
+        newProductBox.setAlignment(Pos.CENTER);
+        newProductBox.getChildren().add(new Text("Nombre Producto: "));
+        newProductBox.getChildren().add(this.inputNombre);
+        newProductBox.setId("productPane");        
+        return newProductBox;        
     }
 
     private void showGuardarProductoAction() {
