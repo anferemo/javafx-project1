@@ -1,5 +1,6 @@
 package com.andrusoft.planning.product.app;
 
+import com.andrusoft.planning.product.app.view.LoteWindow;
 import com.andrusoft.planning.product.app.view.ProductoWindow;
 import com.andrusoft.planning.product.app.view.Pagina2Pane;
 import java.util.logging.Level;
@@ -48,9 +49,9 @@ public class App extends Application {
         
         //Se crean las vistas(paginas)
         var productoView = new ProductoWindow();
+        var loteView = new LoteWindow();
         
-        
-        StackPane paginaApp = new StackPane(label, productoView, new Pagina2Pane());
+        StackPane paginaApp = new StackPane(label, productoView, loteView);
         paginaApp.setId("contenido");
         
         MenuBar menuBar = createMenuUI(paginaApp);
@@ -76,8 +77,8 @@ public class App extends Application {
         MenuItem itemVolver = new MenuItem("Volver"); 
         menu1.getItems().add(itemVolver);
         
-        Menu menu2 = new Menu("Menu 2");
-        MenuItem item2 = new MenuItem("Ver Pagina 2"); 
+        Menu menu2 = new Menu("Lotes");
+        MenuItem item2 = new MenuItem("Ver"); 
         menu2.getItems().add(item2);        
         menuBar.getMenus().addAll(menu1, menu2);
         
@@ -93,7 +94,7 @@ public class App extends Application {
         
         item2.setOnAction((ActionEvent action) -> {
             contenido.getChildren().forEach((var page) -> {
-                if(!page.getId().equals("Pagina 2") && !page.getId().equals("MenuBar")) {
+                if(!page.getId().equals("LoteWindow") && !page.getId().equals("MenuBar")) {
                     page.setVisible(false);
                 } else {
                     page.setVisible(true);
