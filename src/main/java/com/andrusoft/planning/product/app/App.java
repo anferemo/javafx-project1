@@ -1,5 +1,7 @@
 package com.andrusoft.planning.product.app;
 
+import com.andrusoft.planning.product.app.controller.LoteController;
+import com.andrusoft.planning.product.app.dao.LoteDAO;
 import com.andrusoft.planning.product.app.view.LoteWindow;
 import com.andrusoft.planning.product.app.view.ProductoWindow;
 import com.andrusoft.planning.product.app.view.Pagina2Pane;
@@ -30,7 +32,7 @@ public class App extends Application {
         var javaVersion = SystemInfo.javaVersion();
         var javafxVersion = SystemInfo.javafxVersion();
         
-        DatabaseConnection database= null;
+        DatabaseConnection database= null;        
         
         try {
             database = new DatabaseConnection();
@@ -40,6 +42,10 @@ public class App extends Application {
                 logger.log(Level.INFO, "Esquema NO existe");
                 database.createSchema();
             }
+            
+            loadLoteData();
+            
+            
         } catch (Exception ex) {
             logger.log(Level.SEVERE, ex.getMessage());
         }
@@ -117,6 +123,11 @@ public class App extends Application {
 
     public static void main(String[] args) {
         launch();
+    }
+
+    private void loadLoteData() throws Exception{
+        LoteController loteCont = new LoteController();
+        loteCont.loadLoteData();        
     }
 
 }
