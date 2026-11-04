@@ -53,7 +53,6 @@ public class ProductoWindow extends VBox{
         this.inputNombre = new TextField();
         this.inputLeadTime = new NumericTextField();
         var boxProductCreate = new VBox(label, btnCreateProductDialog);
-        this.setId("ProductWindow");
         showGuardarProductoAction();
         createGuardarProductoDialog();
         
