@@ -12,6 +12,7 @@ import com.andrusoft.planning.product.app.model.Lote;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -30,6 +31,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
@@ -42,6 +44,8 @@ public class LoteWindow extends VBox{
     private LoteController controller;
     private ProductController prodController;
     private Label lblTitle;
+    private TextField txtProductSearch;
+    private Button searchLoteButton;
     private Dialog dialogNewLote;
     private Button showDialogButton;
     private TableView<Lote> tablaLotes;
@@ -56,15 +60,20 @@ public class LoteWindow extends VBox{
         this.prodController=new ProductController();                
         this.lblTitle= new Label("Tabla de Lotes");
         createTablaLotes();
-        //¿Crear contentPane para mostrar la tabla?
+        var searchTitle = new Label("Búsqueda: ");        
+        HBox searchBox = createSearchBox();
         
         createLoteDialog();
         createShowLoteDialogButton();
         
         this.setId("LoteWindow");
-        var boxLoteWindow = new VBox(lblTitle, showDialogButton, tablaLotes);        
+        var boxLoteWindow = new VBox(lblTitle, showDialogButton, searchTitle, searchBox, tablaLotes);        
         super.setVisible(false);
+        super.setSpacing(5);
+        boxLoteWindow.setSpacing(10);
+        boxLoteWindow.setPadding(new Insets(5, 10, 10, 10));
         super.getChildren().add(boxLoteWindow);
+        
         
     }
 
@@ -106,6 +115,21 @@ public class LoteWindow extends VBox{
         });
     }
     
+    private void createSearchLoteButton() {
+        this.searchLoteButton=new Button("Buscar");        
+        this.searchLoteButton.setOnAction((ActionEvent action)->{
+            if(!this.txtProductSearch.getText().isEmpty()) {
+                StringBuilder txtSearch = new StringBuilder(this.txtProductSearch.getText());
+                txtSearch.append("%");
+                ObservableList<Lote> lotes= FXCollections.observableArrayList(controller.getByProduct(txtSearch.toString()));
+                this.tablaLotes.setItems(lotes);
+            } else {
+                updateLoteTable();
+            }
+            
+        });
+    }
+    
     private Node createNewLoteForm() {
         GridPane gridPane = new GridPane();
         gridPane.setMinSize(400, 200);
@@ -120,7 +144,6 @@ public class LoteWindow extends VBox{
         Text lblProducto = new Text("Producto: ");
         
         fillProductSelect();
-        //ChoiceBox<String> productSelect = new ChoiceBox<>();
         
         gridPane.add(lblCodigo, 0, 0);
         gridPane.add(this.txtNewCodigo, 1, 0);
@@ -140,23 +163,40 @@ public class LoteWindow extends VBox{
         TableColumn<Lote,String> nombreProdColumn = new TableColumn<>("Producto");
         nombreProdColumn.setCellValueFactory(cellData->new SimpleStringProperty(cellData.getValue().getProducto()));
         
+        TableColumn<Lote,String> cantidadProgramadaColumn = new TableColumn<>("Cantidad Programada");
+        cantidadProgramadaColumn.setCellValueFactory(cellData->new SimpleStringProperty(String.valueOf(cellData.getValue().getCantidadProgramada())));
+        
         DateTimeFormatter dmy = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         TableColumn<Lote,String> fechaEnvase = new TableColumn<>("Fecha De Envase");      
-        fechaEnvase.setCellValueFactory(cellData-> {
-            
+        fechaEnvase.setCellValueFactory(cellData-> {            
             LocalDate celda = cellData.getValue().getFechaEnvase();
             return new SimpleStringProperty(celda!=null ? celda.format(dmy): "");
         });
         
         TableColumn<Lote,String> fechaAprobacion = new TableColumn<>("Fecha Aprobacion MB");      
-        fechaAprobacion.setCellValueFactory(cellData-> {
-            
+        fechaAprobacion.setCellValueFactory(cellData-> {            
             LocalDate celda = cellData.getValue().getFechaAprobacionMB();
             return new SimpleStringProperty(celda!=null ? celda.format(dmy): "");
         });
         
+        TableColumn<Lote,String> fechaEmisionOP = new TableColumn<>("Fecha Emision OP");      
+        fechaEmisionOP.setCellValueFactory(cellData-> {            
+            LocalDate celda = cellData.getValue().getFechaEmisionOP();
+            return new SimpleStringProperty(celda!=null ? celda.format(dmy): "");
+        });
+        
+        TableColumn<Lote,String> cantidadEntregadaColumn = new TableColumn<>("Cantidad Entregada");
+        cantidadEntregadaColumn.setCellValueFactory(cellData->new SimpleStringProperty(String.valueOf(cellData.getValue().getCantidadEntregada())));
+        
+        TableColumn<Lote,String> observacionColumn = new TableColumn<>("Observaciones");
+        observacionColumn.setCellValueFactory(cellData->new SimpleStringProperty(cellData.getValue().getObservaciones()));
+        
+        TableColumn<Lote,String> estadoOrdenColumn = new TableColumn<>("Estado Orden");
+        estadoOrdenColumn.setCellValueFactory(cellData->new SimpleStringProperty(cellData.getValue().getEstadoOrigen()));
+        
+        
         this.tablaLotes = new TableView<>();
-        this.tablaLotes.getColumns().addAll(codigoColumn, nombreProdColumn, fechaEnvase, fechaAprobacion);
+        this.tablaLotes.getColumns().addAll(codigoColumn, nombreProdColumn, fechaEnvase, fechaAprobacion, fechaEmisionOP, cantidadProgramadaColumn, cantidadEntregadaColumn, observacionColumn, estadoOrdenColumn);
         updateLoteTable();
     }
     
@@ -170,6 +210,18 @@ public class LoteWindow extends VBox{
         this.productSelect=new ChoiceBox<>();        
         ObservableList<String> prodNames= FXCollections.observableArrayList(prodController.getProductNames());
         this.productSelect.setItems(prodNames);
+    }
+
+    private HBox createSearchBox() {
+        HBox box = new HBox();
+        Label lblProductSearch = new Label("Producto: ");
+        this.txtProductSearch = new TextField();
+        createSearchLoteButton();
+        box.getChildren().add(lblProductSearch);
+        box.getChildren().add(this.txtProductSearch);
+        box.getChildren().add(this.searchLoteButton);
+        box.setSpacing(10);
+        return box;
     }
     
     

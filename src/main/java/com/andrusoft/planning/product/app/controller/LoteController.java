@@ -54,8 +54,11 @@ public class LoteController {
             loteDAO.saveLotes(lotesLeidos);
         } catch (Exception ex) {
             logger.log(Level.WARNING, "Hubo un error al cargar el archivo: {0}", ex.getMessage());            
-        }
-        
+        }        
+    }
+    
+    public List<Lote> getByProduct(String product) {
+        return loteDAO.queryAllLotesByProductName(product);
     }
     
     
