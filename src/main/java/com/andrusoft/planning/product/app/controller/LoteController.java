@@ -22,7 +22,7 @@ public class LoteController {
  
     private List<Lote> listaLotes;
     private LoteDAO loteDAO;
-    private SeguimientoProduccionReader fileReader;
+    private SeguimientoProduccionReader fileReader;    
 
     public LoteController() {
         listaLotes = new ArrayList<>();
@@ -31,7 +31,7 @@ public class LoteController {
     }
 
     public List<Lote> getListaLotes() {
-        return listaLotes;
+        return loteDAO.queryAllLotes();
     }
 
     public void setListaLotes(List<Lote> listaLotes) {
@@ -39,16 +39,19 @@ public class LoteController {
     }
     
     public void addLote(Lote lote) {
-        this.listaLotes.add(lote);
+        this.loteDAO.addLote(lote);
+        //this.listaLotes.add(lote);
     }
     
     public void loadLoteData() {
         logger.info("loadLoteData() started");
         loteDAO.createTable();
         loteDAO.deleteAll();
-        logger.info("loadLoteData() finished");
+        logger.info("loadLoteData() finished");        
         try {
-            fileReader.loadFile();
+            List<Lote> lotesLeidos = new ArrayList<>();
+            lotesLeidos.addAll(fileReader.loadFile());
+            loteDAO.saveLotes(lotesLeidos);
         } catch (Exception ex) {
             logger.log(Level.WARNING, "Hubo un error al cargar el archivo: {0}", ex.getMessage());            
         }

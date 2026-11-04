@@ -12,11 +12,12 @@ import java.util.Objects;
  */
 public class Product {    
     private String nombre;
-    private String descripcion;    
+    //private String descripcion;
+    private int leadtime;
 
-    public Product(String nombre, String descripcion) {
+    public Product(String nombre, int leadtime) {
         this.nombre = nombre;
-        this.descripcion = descripcion;
+        this.leadtime=leadtime;
     }
 
     public String getNombre() {
@@ -27,19 +28,19 @@ public class Product {
         this.nombre = nombre;
     }
 
-    public String getDescripcion() {
-        return descripcion;
+    public int getLeadtime() {
+        return leadtime;
     }
-
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
+    
+    public void setLeadtime(int leadtime) {
+        this.leadtime=leadtime;
     }
 
     @Override
     public int hashCode() {
         int hash = 3;
         hash = 23 * hash + Objects.hashCode(this.nombre);
-        hash = 23 * hash + Objects.hashCode(this.descripcion);
+        hash = 23 * hash + Objects.hashCode(this.leadtime);
         return hash;
     }
 

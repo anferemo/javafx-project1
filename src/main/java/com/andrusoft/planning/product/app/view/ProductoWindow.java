@@ -5,7 +5,9 @@
 package com.andrusoft.planning.product.app.view;
 
 import com.andrusoft.planning.product.app.controller.ProductController;
+import com.andrusoft.planning.product.app.custom.NumericTextField;
 import com.andrusoft.planning.product.app.model.Product;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -22,6 +24,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -36,7 +39,8 @@ public class ProductoWindow extends VBox{
     private Button btnGuardar;
     private Button btnCreateProductDialog;
     private TextField inputNombre;
-    private TableView<Product> tabla;
+    private TableView<Product> tabla;    
+    private NumericTextField inputLeadTime;
     private Dialog productDialog;
     private Alert alert;
     
@@ -47,6 +51,7 @@ public class ProductoWindow extends VBox{
         this.btnCreateProductDialog = new Button("Crear Producto");
         var label = new Label("Maestro de Productos");
         this.inputNombre = new TextField();
+        this.inputLeadTime = new NumericTextField();
         var boxProductCreate = new VBox(label, btnCreateProductDialog);
         this.setId("ProductWindow");
         showGuardarProductoAction();
@@ -76,7 +81,7 @@ public class ProductoWindow extends VBox{
                     alert = new Alert(AlertType.ERROR);
                     alert.setContentText("No hay nombre para registrar");                    
                 } else {
-                    controller.addProduct(new Product(this.inputNombre.getText(),""));                
+                    controller.addProduct(new Product(this.inputNombre.getText(),this.inputLeadTime.getValue()));
                     alert = new Alert(AlertType.INFORMATION);
                     alert.setContentText("Producto: " +this.inputNombre.getText() + " Creado");                    
                     updateProductTable();
@@ -99,19 +104,34 @@ public class ProductoWindow extends VBox{
         TableColumn<Product,String> nombreColumn = new TableColumn<>("Nombre");
         nombreColumn.setCellValueFactory(cellData->new SimpleStringProperty(cellData.getValue().getNombre()));
         
+        TableColumn<Product,Integer> leadColumn = new TableColumn<>("Leadtime");
+        leadColumn.setCellValueFactory(cellData-> new SimpleObjectProperty<>(cellData.getValue().getLeadtime()));
+        
         this.tabla = new TableView<>();
-        this.tabla.getColumns().addAll(nombreColumn);
+        this.tabla.getColumns().addAll(nombreColumn, leadColumn);
         updateProductTable();        
         return tabla;
     }
     
-    private Node createProductForm() {        
-        HBox newProductBox = new HBox();                
-        newProductBox.setAlignment(Pos.CENTER);
-        newProductBox.getChildren().add(new Text("Nombre Producto: "));
-        newProductBox.getChildren().add(this.inputNombre);
-        newProductBox.setId("productPane");        
-        return newProductBox;        
+    private Node createProductForm() {
+        GridPane paneProduct = new GridPane();
+        paneProduct.setPadding(new Insets(10,10,10,10));
+        paneProduct.setVgap(5);
+        paneProduct.setHgap(5);
+                
+        paneProduct.setAlignment(Pos.CENTER);
+        
+        Text lblNombreProd = new Text("Nombre Producto: ");
+        
+        Text lblLeadTime = new Text("LEADTIME");
+        
+        paneProduct.add(lblNombreProd, 0, 0);
+        paneProduct.add(this.inputNombre, 1, 0);
+        paneProduct.add(lblLeadTime,0,1);
+        paneProduct.add(this.inputLeadTime, 1, 1);
+        
+        paneProduct.setId("productPane");
+        return paneProduct;
     }
 
     private void showGuardarProductoAction() {

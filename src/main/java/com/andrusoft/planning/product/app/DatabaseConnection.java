@@ -4,6 +4,7 @@
  */
 package com.andrusoft.planning.product.app;
 
+import com.andrusoft.planning.product.app.dao.LoteDAO;
 import com.andrusoft.planning.product.app.dao.ProductDAO;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -64,7 +65,10 @@ public final class DatabaseConnection {
     public void createSchema() throws SQLException {
         logger.info("Creating schema");
         ProductDAO daoProd = new ProductDAO();
-        daoProd.createTable();        
+        daoProd.createTable();
+        LoteDAO daoLote = new LoteDAO();
+        daoLote.createTable();
+        daoLote.deleteAll();
         logger.info("Created schema");
-    }
+    }        
 }

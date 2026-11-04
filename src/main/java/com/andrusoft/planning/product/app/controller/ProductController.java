@@ -34,6 +34,10 @@ public class ProductController {
     public void addProduct(Product product) {
         productDAO.saveProduct(product);
     }
+    
+    public List<String> getProductNames() {
+        return productDAO.queryAllProductNames();
+    }
 
     
 }
