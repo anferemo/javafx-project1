@@ -5,6 +5,8 @@
 package com.andrusoft.planning.product.app.dao;
 
 import com.andrusoft.planning.product.app.DatabaseConnection;
+import com.andrusoft.planning.product.app.MyBatisConnection;
+import com.andrusoft.planning.product.app.mapper.LoteMapper;
 import com.andrusoft.planning.product.app.model.Lote;
 import java.sql.Connection;
 import java.sql.Date;
@@ -17,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.ibatis.session.SqlSession;
 
 /**
  *
@@ -36,46 +39,19 @@ public class LoteDAO {
     public LoteDAO() {
     }
     
-    public List<Lote> queryAllLotes() {
-        List<Lote> lista = new ArrayList<>();
-        try(Connection conn = DatabaseConnection.getConnection()) {
-            Statement statement = conn.createStatement();
-            ResultSet rs = statement.executeQuery(SELECT_ALL_SQL);
-            while(rs.next()) {               
-                String codigo = rs.getString("codigo");
-                String producto = rs.getString("producto");
-                long cantidadProgramada = rs.getLong("cantidad_programada");
-                Date fechaEnvase = rs.getDate("fecha_envase");
-                Date fechaAprobacion = rs.getDate("fecha_aprobacion_mb");
-                Date fechaEmision = rs.getDate("fecha_emision_op");
-                long cantidadEntregada = rs.getLong("cantidad_entregada");
-                String observaciones = rs.getString("observaciones");
-                String estadoOrigen = rs.getString("estado_origen");
-                
-                Lote lote = new Lote();
-                lote.setCodigo(codigo);
-                lote.setProducto(producto);
-                lote.setCantidadProgramada(cantidadProgramada);
-                if(fechaEnvase!=null) {
-                    lote.setFechaEnvase(fechaEnvase.toLocalDate());
-                }
-                if(fechaAprobacion!=null) {
-                    lote.setFechaAprobacionMB(fechaAprobacion.toLocalDate());
-                }
-                if(fechaEmision!=null) {
-                    lote.setFechaEmisionOP(fechaEmision.toLocalDate());
-                }
-                
-                lote.setCantidadEntregada(cantidadEntregada);
-                lote.setObservaciones(observaciones);
-                lote.setEstadoOrigen(estadoOrigen);
-                
-                lista.add(lote);
-            }
-        } catch (SQLException ex) {
-            logger.log(Level.SEVERE, null, ex);
-        }
-        return lista;
+    public List<Lote> queryAllLotes() {        
+        try (SqlSession session = createSession()) {
+            LoteMapper loteMapper = session.getMapper(LoteMapper.class);
+            return loteMapper.getAllLotes();            
+        } catch (Exception ex){
+            return new ArrayList<>();
+        }        
+    }
+    
+    private SqlSession createSession() {
+        SqlSession session = null;
+        session = MyBatisConnection.factory.openSession();
+        return session;
     }
     
     public void createTable() {
@@ -181,46 +157,13 @@ public class LoteDAO {
         }
     }
     
-    public List<Lote> queryAllLotesByProductName(String productName) {
-        List<Lote> lista = new ArrayList<>();
-        try(Connection conn = DatabaseConnection.getConnection()) {
-            PreparedStatement statement = conn.prepareStatement(SELECT_LOTE_BY_PRODUCT);
-            statement.setString(1, productName);
-            ResultSet rs = statement.executeQuery();
-            while(rs.next()) {               
-                String codigo = rs.getString("codigo");
-                String producto = rs.getString("producto");
-                long cantidadProgramada = rs.getLong("cantidad_programada");
-                Date fechaEnvase = rs.getDate("fecha_envase");
-                Date fechaAprobacion = rs.getDate("fecha_aprobacion_mb");
-                Date fechaEmision = rs.getDate("fecha_emision_op");
-                long cantidadEntregada = rs.getLong("cantidad_entregada");
-                String observaciones = rs.getString("observaciones");
-                String estadoOrigen = rs.getString("estado_origen");
-                
-                Lote lote = new Lote();
-                lote.setCodigo(codigo);
-                lote.setProducto(producto);
-                lote.setCantidadProgramada(cantidadProgramada);
-                if(fechaEnvase!=null) {
-                    lote.setFechaEnvase(fechaEnvase.toLocalDate());
-                }
-                if(fechaAprobacion!=null) {
-                    lote.setFechaAprobacionMB(fechaAprobacion.toLocalDate());
-                }
-                if(fechaEmision!=null) {
-                    lote.setFechaEmisionOP(fechaEmision.toLocalDate());
-                }
-                
-                lote.setCantidadEntregada(cantidadEntregada);
-                lote.setObservaciones(observaciones);
-                lote.setEstadoOrigen(estadoOrigen);
-                
-                lista.add(lote);
-            }
-        } catch (SQLException ex) {
-            logger.log(Level.SEVERE, null, ex);
-        }
-        return lista;
+    public List<Lote> queryAllLotesByProductName(String productName) {        
+        try (SqlSession session = createSession()) {
+            LoteMapper loteMapper = session.getMapper(LoteMapper.class);
+            return loteMapper.getAllLotesByProductName(productName);
+        } catch (Exception ex) {
+            return new ArrayList<>();
+        }        
+        
     }
 }

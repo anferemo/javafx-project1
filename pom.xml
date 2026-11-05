@@ -29,6 +29,14 @@
             <version>0.13.0</version>
         </dependency>
         
+        <!-- Source: https://mvnrepository.com/artifact/org.mybatis/mybatis -->
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
+            <version>3.5.19</version>
+            <scope>compile</scope>
+        </dependency>
+        
         
     </dependencies>
     <build>

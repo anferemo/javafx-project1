@@ -43,6 +43,8 @@ public class App extends Application {
                 database.createSchema();
             }
             
+            MyBatisConnection.init();
+            
             loadLoteData();
             
             

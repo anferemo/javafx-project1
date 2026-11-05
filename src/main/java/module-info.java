@@ -4,5 +4,7 @@ module com.andrusoft.planning.product.app {
     requires java.sql;
     requires java.naming;
     requires odfdom.java;
-    exports com.andrusoft.planning.product.app;    
+    requires org.mybatis;
+    exports com.andrusoft.planning.product.app;
+    exports com.andrusoft.planning.product.app.model;
 }
