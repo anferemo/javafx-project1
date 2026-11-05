@@ -1,5 +1,8 @@
 package com.andrusoft.planning.product.app;
 
+import com.andrusoft.planning.product.app.controller.LoteController;
+import com.andrusoft.planning.product.app.dao.LoteDAO;
+import com.andrusoft.planning.product.app.view.LoteWindow;
 import com.andrusoft.planning.product.app.view.ProductoWindow;
 import com.andrusoft.planning.product.app.view.Pagina2Pane;
 import java.util.logging.Level;
@@ -29,7 +32,7 @@ public class App extends Application {
         var javaVersion = SystemInfo.javaVersion();
         var javafxVersion = SystemInfo.javafxVersion();
         
-        DatabaseConnection database= null;
+        DatabaseConnection database= null;        
         
         try {
             database = new DatabaseConnection();
@@ -39,6 +42,10 @@ public class App extends Application {
                 logger.log(Level.INFO, "Esquema NO existe");
                 database.createSchema();
             }
+            
+            loadLoteData();
+            
+            
         } catch (Exception ex) {
             logger.log(Level.SEVERE, ex.getMessage());
         }
@@ -48,9 +55,9 @@ public class App extends Application {
         
         //Se crean las vistas(paginas)
         var productoView = new ProductoWindow();
+        var loteView = new LoteWindow();
         
-        
-        StackPane paginaApp = new StackPane(label, productoView, new Pagina2Pane());
+        StackPane paginaApp = new StackPane(label, productoView, loteView);
         paginaApp.setId("contenido");
         
         MenuBar menuBar = createMenuUI(paginaApp);
@@ -76,8 +83,8 @@ public class App extends Application {
         MenuItem itemVolver = new MenuItem("Volver"); 
         menu1.getItems().add(itemVolver);
         
-        Menu menu2 = new Menu("Menu 2");
-        MenuItem item2 = new MenuItem("Ver Pagina 2"); 
+        Menu menu2 = new Menu("Lotes");
+        MenuItem item2 = new MenuItem("Ver"); 
         menu2.getItems().add(item2);        
         menuBar.getMenus().addAll(menu1, menu2);
         
@@ -93,7 +100,7 @@ public class App extends Application {
         
         item2.setOnAction((ActionEvent action) -> {
             contenido.getChildren().forEach((var page) -> {
-                if(!page.getId().equals("Pagina 2") && !page.getId().equals("MenuBar")) {
+                if(!page.getId().equals("LoteWindow") && !page.getId().equals("MenuBar")) {
                     page.setVisible(false);
                 } else {
                     page.setVisible(true);
@@ -116,6 +123,11 @@ public class App extends Application {
 
     public static void main(String[] args) {
         launch();
+    }
+
+    private void loadLoteData() throws Exception{
+        LoteController loteCont = new LoteController();
+        loteCont.loadLoteData();        
     }
 
 }

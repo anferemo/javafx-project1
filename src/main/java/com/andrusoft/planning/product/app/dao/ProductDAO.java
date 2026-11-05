@@ -24,9 +24,10 @@ public class ProductDAO {
     
     private static final Logger logger = Logger.getLogger(ProductDAO.class.getName());
     
-    private static final String INSERT_SQL = "INSERT INTO product(name) values(?)";
+    private static final String INSERT_SQL = "INSERT INTO product(name,leadtime) values(?,?)";
     private static final String SELECT_SQL = "select * from product";
-    private static final String CREATE_TABLE_SQL = "create table if not exists product(NAME varchar(64) primary key)";
+    private static final String CREATE_TABLE_SQL = "create table if not exists product(NAME varchar(64) primary key, LEADTIME int)";
+    private static final String SELECT_PROD_NAMES = "select name from product";
     
     public ProductDAO(){
         
@@ -39,7 +40,24 @@ public class ProductDAO {
             ResultSet rs = statement.executeQuery(SELECT_SQL);
             while(rs.next()) {               
                 String name = rs.getString("NAME");
-                lista.add(new Product(name, ""));
+                int leadtime = rs.getInt("LEADTIME");
+                lista.add(new Product(name, leadtime));
+            }
+        } catch (SQLException ex) {
+            logger.log(Level.SEVERE, null, ex);
+        }
+        
+        return lista;
+    }
+    
+    public List<String> queryAllProductNames() {
+        List<String> lista = new ArrayList<>();
+        try(Connection conn = DatabaseConnection.getConnection()) {
+            Statement statement = conn.createStatement();
+            ResultSet rs = statement.executeQuery(SELECT_PROD_NAMES);
+            while(rs.next()) {               
+                String name = rs.getString("NAME");                
+                lista.add(name);
             }
         } catch (SQLException ex) {
             logger.log(Level.SEVERE, null, ex);
@@ -52,6 +70,7 @@ public class ProductDAO {
         try(Connection conn = DatabaseConnection.getConnection()) {
                 PreparedStatement prepStmt = conn.prepareStatement(INSERT_SQL);
                 prepStmt.setString(1, producto.getNombre());
+                prepStmt.setInt(2, producto.getLeadtime());
                 prepStmt.executeUpdate();
                 
         } catch (SQLException ex) {
