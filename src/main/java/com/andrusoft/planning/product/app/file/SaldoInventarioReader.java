@@ -43,8 +43,12 @@ public class SaldoInventarioReader {
                     endOfFile=true;
                 }
                 Inventory itemInventario = mapData(row);
-                logger.log(Level.INFO, "El objeto cargado es: {0}",  itemInventario.toString());
-                logger.log(Level.INFO, "*******************************");
+                if (itemInventario!=null){
+                    logger.log(Level.INFO, "El objeto cargado es: {0}",  itemInventario.toString());
+                    logger.log(Level.INFO, "*******************************");
+                    lista.add(itemInventario);
+                }
+                
                 rowNumber++;
             }            
         } catch (FileNotFoundException ex) {
@@ -62,6 +66,9 @@ public class SaldoInventarioReader {
         if (celda!=null) {
             if(celda.getCellType().equals(CellType.NUMERIC)) {
                 itemInventario.setReferencia(celda.getNumericCellValue());
+            } else if(celda.getCellType().equals(CellType.STRING)) {
+                Double value = Double.valueOf(celda.getStringCellValue());
+                itemInventario.setReferencia(value);
             }        
 
             celda = row.getCell(2);

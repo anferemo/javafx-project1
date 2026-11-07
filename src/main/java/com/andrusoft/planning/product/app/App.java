@@ -1,8 +1,7 @@
 package com.andrusoft.planning.product.app;
 
+import com.andrusoft.planning.product.app.controller.InventoryController;
 import com.andrusoft.planning.product.app.controller.LoteController;
-import com.andrusoft.planning.product.app.dao.InventoryDAO;
-import com.andrusoft.planning.product.app.dao.LoteDAO;
 import com.andrusoft.planning.product.app.view.InventoryWindow;
 import com.andrusoft.planning.product.app.view.LoteWindow;
 import com.andrusoft.planning.product.app.view.ProductoWindow;
@@ -31,11 +30,15 @@ public class App extends Application {
     private ProductoWindow productoView;
     private LoteWindow loteView;
     private InventoryWindow inventoryView;
+    private InventoryController inventoryController;
 
     @Override
     public void start(Stage stage) {
         var javaVersion = SystemInfo.javaVersion();
         var javafxVersion = SystemInfo.javafxVersion();
+        
+        inventoryController=new InventoryController();
+        
         
         DatabaseConnection database= null;        
         
@@ -49,11 +52,8 @@ public class App extends Application {
             }
             
             MyBatisConnection.init();
+                        
             
-            //Prueba para generar tabla de inventario
-            InventoryDAO invDao = new InventoryDAO();
-            invDao.createTable();
-            logger.log(Level.INFO, "Tabla de inventarios creada");
             
             loadLoteData();
             
@@ -69,6 +69,9 @@ public class App extends Application {
         productoView = new ProductoWindow();
         loteView = new LoteWindow();
         inventoryView = new InventoryWindow();
+        
+        createTables();
+       
         
         StackPane paginaApp = new StackPane(label, productoView, loteView, inventoryView);
         paginaApp.setId("contenido");
@@ -157,6 +160,12 @@ public class App extends Application {
     private void loadLoteData() throws Exception{
         LoteController loteCont = new LoteController();
         loteCont.loadLoteData();        
+    }
+
+    private void createTables() {
+        inventoryController.createTable();
+        //inventoryController.createPrimaryKey();
+        logger.log(Level.INFO, "Tabla de inventarios creada");
     }
 
 }
