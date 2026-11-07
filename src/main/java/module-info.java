@@ -5,6 +5,7 @@ module com.andrusoft.planning.product.app {
     requires java.naming;
     requires odfdom.java;
     requires org.mybatis;
+    requires poi;
     exports com.andrusoft.planning.product.app;
-    exports com.andrusoft.planning.product.app.model;
+    exports com.andrusoft.planning.product.app.model;    
 }

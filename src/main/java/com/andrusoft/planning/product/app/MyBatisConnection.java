@@ -4,6 +4,7 @@
  */
 package com.andrusoft.planning.product.app;
 
+import com.andrusoft.planning.product.app.mapper.InventoryMapper;
 import com.andrusoft.planning.product.app.mapper.LoteMapper;
 import java.io.IOException;
 import java.io.Reader;
@@ -34,6 +35,7 @@ public class MyBatisConnection {
         }
         factory = new SqlSessionFactoryBuilder().build(reader);
         factory.getConfiguration().addMapper(LoteMapper.class);
+        factory.getConfiguration().addMapper(InventoryMapper.class);
     }
     
     public static SqlSessionFactory getSessionFactory() {

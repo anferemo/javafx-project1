@@ -6,9 +6,12 @@ package com.andrusoft.planning.product.app.mapper;
 
 import com.andrusoft.planning.product.app.model.Lote;
 import java.util.List;
+import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.type.JdbcType;
 
 /**
@@ -16,9 +19,14 @@ import org.apache.ibatis.type.JdbcType;
  * @author andrusoft
  */
 public interface LoteMapper {
+    
+    @Update({
+        "create table if not exists lote(codigo varchar(64) primary key, producto varchar(128) not null, cantidad_programada long, fecha_envase Date, fecha_aprobacion_mb Date, fecha_emision_op Date, cantidad_entregada long, observaciones varchar(128), estado_origen varchar(128))"
+    })
+    void createTable();
  
     @Select({
-            "select * from lote"
+            "select * from lote order by fecha_envase desc"
     })
     @Results({
         @Result(column = "codigo", property = "codigo", jdbcType = JdbcType.VARCHAR),
@@ -49,4 +57,15 @@ public interface LoteMapper {
         @Result(column = "estado_origen", property = "estadoOrigen", jdbcType = JdbcType.VARCHAR),
     })        
     List<Lote> getAllLotesByProductName(String prodName);
+    
+    @Delete({
+        "delete from lote"
+    })
+    int deleteAll();
+    
+    @Insert({
+        "INSERT INTO lote(codigo, producto, cantidad_programada, fecha_envase, fecha_aprobacion_mb, fecha_emision_op, cantidad_entregada, observaciones, estado_origen) "
+                + "values(#{codigo}, #{producto},#{cantidadProgramada}, #{fechaEnvase}, #{fechaAprobacionMB}, #{fechaEmisionOP}, #{cantidadEntregada}, #{observaciones},#{estadoOrigen})"
+    })
+    int addLote(Lote lote);
 }
