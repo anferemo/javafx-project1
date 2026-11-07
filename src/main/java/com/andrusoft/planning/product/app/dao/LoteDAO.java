@@ -4,22 +4,13 @@
  */
 package com.andrusoft.planning.product.app.dao;
 
-import com.andrusoft.planning.product.app.DatabaseConnection;
 import com.andrusoft.planning.product.app.MyBatisConnection;
 import com.andrusoft.planning.product.app.mapper.LoteMapper;
 import com.andrusoft.planning.product.app.model.Lote;
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 
 /**
@@ -35,7 +26,7 @@ public class LoteDAO {
     }
     
     public List<Lote> queryAllLotes() {        
-        try (SqlSession session = createSession()) {
+        try (SqlSession session = MyBatisConnection.createSession()) {
             LoteMapper loteMapper = session.getMapper(LoteMapper.class);
             return loteMapper.getAllLotes();            
         } catch (Exception ex){
@@ -43,21 +34,9 @@ public class LoteDAO {
         }        
     }
     
-    private SqlSession createSession() {
-        SqlSession session = null;
-        session = MyBatisConnection.factory.openSession();
-        return session;
-    }
-    
-    private SqlSession createBatchSession() {
-        SqlSession session = null;
-        session = MyBatisConnection.factory.openSession(ExecutorType.BATCH);
-        return session;
-    }
-    
     public void createTable() {
         logger.info("Creating Lote Table");
-        try (SqlSession session = createSession()) {
+        try (SqlSession session = MyBatisConnection.createSession()) {
             LoteMapper loteMapper = session.getMapper(LoteMapper.class);
             loteMapper.createTable();            
         }
@@ -66,7 +45,7 @@ public class LoteDAO {
     
     public void deleteAll() {
         logger.info("Deleting Lote Table");
-        try(SqlSession session = createSession()) {
+        try(SqlSession session = MyBatisConnection.createSession()) {
             LoteMapper loteMapper = session.getMapper(LoteMapper.class);            
             int rows = loteMapper.deleteAll();
             session.commit();
@@ -94,7 +73,7 @@ public class LoteDAO {
     }
 
     public void addLote(Lote lote) {
-        try(SqlSession session = createSession()) {
+        try(SqlSession session = MyBatisConnection.createSession()) {
             LoteMapper loteMapper = session.getMapper(LoteMapper.class);           
             int cant = loteMapper.addLote(lote);            
             logger.log(Level.INFO, "{0} Lote''s rows Added", cant);
@@ -105,7 +84,7 @@ public class LoteDAO {
     }
     
     public List<Lote> queryAllLotesByProductName(String productName) {        
-        try (SqlSession session = createSession()) {
+        try (SqlSession session = MyBatisConnection.createSession()) {
             LoteMapper loteMapper = session.getMapper(LoteMapper.class);
             return loteMapper.getAllLotesByProductName(productName);
         } catch (Exception ex) {

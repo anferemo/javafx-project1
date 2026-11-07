@@ -28,6 +28,10 @@ import javafx.stage.Stage;
 public class App extends Application {
     
     private static final Logger logger = Logger.getLogger(App.class.getName());
+    
+    private ProductoWindow productoView;
+    private LoteWindow loteView;
+    private InventoryWindow inventoryView;
 
     @Override
     public void start(Stage stage) {
@@ -63,9 +67,9 @@ public class App extends Application {
         label.setId("Principal");
         
         //Se crean las vistas(paginas)
-        var productoView = new ProductoWindow();
-        var loteView = new LoteWindow();
-        var inventoryView = new InventoryWindow();
+        productoView = new ProductoWindow();
+        loteView = new LoteWindow();
+        inventoryView = new InventoryWindow();
         
         StackPane paginaApp = new StackPane(label, productoView, loteView, inventoryView);
         paginaApp.setId("contenido");
@@ -77,7 +81,8 @@ public class App extends Application {
         
         
         VBox principal = new VBox(menuBox, paginaApp);
-        var scene = new Scene(principal, 640, 480);
+        //var scene = new Scene(principal, 640, 480);
+        var scene = new Scene(principal);
         scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
         
         stage.setScene(scene);

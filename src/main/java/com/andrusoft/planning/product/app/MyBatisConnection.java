@@ -11,6 +11,8 @@ import java.io.Reader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.ExecutorType;
+import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
@@ -43,6 +45,18 @@ public class MyBatisConnection {
             init();
         }
         return factory;
+    }
+    
+    public static SqlSession createSession() {
+        SqlSession session = null;
+        session = MyBatisConnection.factory.openSession();
+        return session;
+    }
+    
+    public static SqlSession createBatchSession() {
+        SqlSession session = null;
+        session = MyBatisConnection.factory.openSession(ExecutorType.BATCH);
+        return session;
     }
     
 }
