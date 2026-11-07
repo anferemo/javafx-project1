@@ -6,7 +6,6 @@ import com.andrusoft.planning.product.app.dao.LoteDAO;
 import com.andrusoft.planning.product.app.view.InventoryWindow;
 import com.andrusoft.planning.product.app.view.LoteWindow;
 import com.andrusoft.planning.product.app.view.ProductoWindow;
-import com.andrusoft.planning.product.app.view.Pagina2Pane;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
