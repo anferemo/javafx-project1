@@ -9,26 +9,24 @@ import com.andrusoft.planning.product.app.model.Inventory;
 import java.io.File;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 
 /**
  *
@@ -83,11 +81,11 @@ public class InventoryWindow extends VBox{
     private void createTablaInventario() {
         this.tablaInventario=new TableView<>();
         TableColumn<Inventory,String> fechaCargue = new TableColumn<>("Fecha Cargue");
-        DateTimeFormatter dmy = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        fechaCargue.setCellValueFactory(cellData -> {
+        DateTimeFormatter dmy = DateTimeFormatter.ofPattern("yyyy-MM-dd");        
+        fechaCargue.setCellValueFactory(cellData -> {            
             LocalDate fchCarga =  cellData.getValue().getFechaCarga();
             return new SimpleStringProperty(fchCarga!=null ? fchCarga.format(dmy): "");
-        });
+        });        
         
         TableColumn<Inventory,String> referencia = new TableColumn<>("Referencia");
         referencia.setCellValueFactory(cellData-> {
@@ -103,6 +101,23 @@ public class InventoryWindow extends VBox{
         tamLote.setCellValueFactory(cellData-> {
             return new SimpleStringProperty(String.valueOf(cellData.getValue().getTamanoLote()));
         });
+        
+        tamLote.setCellFactory(col-> new TableCell<>(){            
+        @Override
+        protected void updateItem(String item, boolean empty) {
+            if(!empty) {
+                Double value = Double.valueOf(item);            
+                super.updateItem(item,  empty);
+                setText(item);
+                if (value<1000){                
+                    setTextFill(Color.BLUE);
+                } else{
+                    setTextFill(Color.GREEN);
+                }
+            }                   
+          }
+        });
+        
         
         TableColumn<Inventory,String> existencia = new TableColumn<>("Existencia");
         existencia.setCellValueFactory(cellData-> {
@@ -129,8 +144,8 @@ public class InventoryWindow extends VBox{
             return new SimpleStringProperty(String.valueOf(cellData.getValue().getProgramacion()));
         });
         
-        this.tablaInventario.getColumns().addAll(fechaCargue, referencia, producto, tamLote, existencia, invMin, expor, ace, programacion);
-        updateInventoryTable();        
+        this.tablaInventario.getColumns().addAll(fechaCargue, referencia, producto, tamLote, existencia, invMin, expor, ace, programacion);        
+        updateInventoryTable();
     }
     
     private HBox createButtonBox() {
