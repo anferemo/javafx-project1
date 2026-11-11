@@ -111,6 +111,24 @@ public class SaldoInventarioReader {
             if(celda.getCellType().equals(CellType.NUMERIC)) {
                 itemInventario.setProgramacion(celda.getNumericCellValue());
             }
+            
+            //Calculo Indicador 1
+            try {
+                double indicador1 = itemInventario.getExistencia()-itemInventario.getInventarioMinimo();
+                itemInventario.setIndicador1(indicador1);
+            }catch (Exception e) {
+                itemInventario.setIndicador1(-1000);
+            }
+            
+            
+            //Calculo Mes
+            try {
+                double mes = itemInventario.getProgramacion()+itemInventario.getAce()+itemInventario.getExistencia();
+                mes = mes / itemInventario.getInventarioMinimo();
+                itemInventario.setMes(mes);
+            } catch (Exception e) {
+                
+            }
 
             itemInventario.setFechaCarga(LocalDate.now());
         }

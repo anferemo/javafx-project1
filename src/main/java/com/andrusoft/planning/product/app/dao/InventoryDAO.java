@@ -85,6 +85,16 @@ public class InventoryDAO {
         }
     }
     
+    public List<Inventory> getInventoryByProduct(String product) {
+        try(SqlSession session= createSession()) {
+            InventoryMapper invMapper = session.getMapper(InventoryMapper.class);
+            return invMapper.getInventoryByProduct(product);
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Hubo un error cargando los registros de Inventario: {0}", e.getMessage());
+            return Collections.emptyList();
+        }
+    }
+    
     private SqlSession createSession() {
         SqlSession session = null;
         session = MyBatisConnection.factory.openSession();

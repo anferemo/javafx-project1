@@ -55,7 +55,7 @@ public class App extends Application {
                         
             
             
-            loadLoteData();
+            //loadLoteData();
             
             
         } catch (Exception ex) {
@@ -157,10 +157,10 @@ public class App extends Application {
         launch();
     }
 
-    private void loadLoteData() throws Exception{
+    /*private void loadLoteData() throws Exception{
         LoteController loteCont = new LoteController();
         loteCont.loadLoteData();        
-    }
+    }*/
 
     private void createTables() {
         inventoryController.createTable();

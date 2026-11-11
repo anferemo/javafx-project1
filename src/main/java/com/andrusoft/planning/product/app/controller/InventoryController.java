@@ -51,4 +51,8 @@ public class InventoryController {
         return this.daoInventory.getInventoryByCargueDate(fecha);
     }
     
+    public List<Inventory> getInventoryByProduct(String prodName) {
+        return this.daoInventory.getInventoryByProduct(prodName);
+    }
+    
 }

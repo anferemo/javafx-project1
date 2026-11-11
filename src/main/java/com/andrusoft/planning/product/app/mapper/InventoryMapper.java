@@ -21,7 +21,7 @@ import org.apache.ibatis.type.JdbcType;
  */
 public interface InventoryMapper {
     @Update({
-        "create table if not exists inventory(fecha_cargue Date not null, referencia double precision not null, producto varchar(128) not null, tamano_lote double precision, existencia double precision, inv_minimo double precision, expor double precision, ace double precision, programacion double precision)"
+        "create table if not exists inventory(fecha_cargue Date not null, referencia double precision not null, producto varchar(128) not null, tamano_lote double precision, existencia double precision, inv_minimo double precision, expor double precision, ace double precision, programacion double precision, indicador_1 double precision, mes double precision)"
     })
     void createTable();
     
@@ -31,8 +31,8 @@ public interface InventoryMapper {
     void createPrimaryKey();
     
     @Insert({
-        "insert into inventory(fecha_cargue, referencia, producto, tamano_lote, existencia, inv_minimo, expor, ace, programacion)",
-        "values (#{fechaCarga}, #{referencia}, #{nombreProducto}, #{tamanoLote}, #{existencia}, #{inventarioMinimo}, #{expor}, #{ace}, #{programacion})"
+        "insert into inventory(fecha_cargue, referencia, producto, tamano_lote, existencia, inv_minimo, expor, ace, programacion, indicador_1, mes)",
+        "values (#{fechaCarga}, #{referencia}, #{nombreProducto}, #{tamanoLote}, #{existencia}, #{inventarioMinimo}, #{expor}, #{ace}, #{programacion}, #{indicador1}, #{mes})"
     })
     int addInventoryData(Inventory inventory);
     
@@ -47,7 +47,7 @@ public interface InventoryMapper {
     int deleteByDate(LocalDate fecha);
     
     @Select({
-        "select * from inventory where fecha_cargue= #{fecha}"
+        "select * from inventory where fecha_cargue= #{fecha} order by producto asc"
     })
     @Results({
         @Result(column = "fecha_cargue", property = "fechaCarga", jdbcType = JdbcType.DATE),
@@ -58,7 +58,27 @@ public interface InventoryMapper {
         @Result(column = "inv_minimo", property = "inventarioMinimo", jdbcType = JdbcType.DOUBLE),
         @Result(column = "expor", property = "expor", jdbcType = JdbcType.DOUBLE),
         @Result(column = "ace", property = "ace", jdbcType = JdbcType.DOUBLE),
-        @Result(column = "programacion", property = "programacion", jdbcType = JdbcType.DOUBLE)
+        @Result(column = "programacion", property = "programacion", jdbcType = JdbcType.DOUBLE),
+        @Result(column = "indicador_1", property = "indicador1", jdbcType = JdbcType.DOUBLE),
+        @Result(column = "mes", property = "mes", jdbcType = JdbcType.DOUBLE)
     })
     List<Inventory> getInventoryByDate(LocalDate fecha);
+    
+    @Select({        
+        "select * from inventory where producto like #{fecha} order by producto asc, fecha_cargue asc"    
+    })
+    @Results({
+        @Result(column = "fecha_cargue", property = "fechaCarga", jdbcType = JdbcType.DATE),
+        @Result(column = "referencia", property = "referencia", jdbcType = JdbcType.DOUBLE),
+        @Result(column = "producto", property = "nombreProducto", jdbcType = JdbcType.VARCHAR),
+        @Result(column = "tamano_lote", property = "tamanoLote", jdbcType = JdbcType.DOUBLE),
+        @Result(column = "existencia", property = "existencia", jdbcType = JdbcType.DOUBLE),
+        @Result(column = "inv_minimo", property = "inventarioMinimo", jdbcType = JdbcType.DOUBLE),
+        @Result(column = "expor", property = "expor", jdbcType = JdbcType.DOUBLE),
+        @Result(column = "ace", property = "ace", jdbcType = JdbcType.DOUBLE),
+        @Result(column = "programacion", property = "programacion", jdbcType = JdbcType.DOUBLE),
+        @Result(column = "indicador_1", property = "indicador1", jdbcType = JdbcType.DOUBLE),
+        @Result(column = "mes", property = "mes", jdbcType = JdbcType.DOUBLE)
+    })
+    List<Inventory> getInventoryByProduct(String nombreProducto);
 }

@@ -23,6 +23,8 @@ public class Inventory {
     private double ace;
     private double programacion;
     private LocalDate fechaCarga;
+    private double indicador1;
+    private double mes;
 
     public Inventory() {
     }
@@ -115,9 +117,25 @@ public class Inventory {
         this.fechaCarga = fechaCarga;
     }
 
+    public double getIndicador1() {
+        return indicador1;
+    }
+
+    public void setIndicador1(double indicador1) {
+        this.indicador1 = indicador1;
+    }
+
+    public double getMes() {
+        return mes;
+    }
+
+    public void setMes(double mes) {
+        this.mes = mes;
+    }    
+    
     @Override
     public String toString() {
-        return "Inventory{" + "rowNum=" + rowNum + ", referencia=" + referencia + ", nombreProducto=" + nombreProducto + ", tamanoLote=" + tamanoLote + ", vence=" + vence + ", existencia=" + existencia + ", inventarioMinimo=" + inventarioMinimo + ", expor=" + expor + ", ace=" + ace + ", programacion=" + programacion + ", fechaCarga=" + fechaCarga + '}';
+        return "Inventory{" + "rowNum=" + rowNum + ", referencia=" + referencia + ", nombreProducto=" + nombreProducto + ", tamanoLote=" + tamanoLote + ", vence=" + vence + ", existencia=" + existencia + ", inventarioMinimo=" + inventarioMinimo + ", expor=" + expor + ", ace=" + ace + ", programacion=" + programacion + ", fechaCarga=" + fechaCarga + ", indicador1=" + indicador1+ ", mes=" + mes + '}';
     }
     
     
