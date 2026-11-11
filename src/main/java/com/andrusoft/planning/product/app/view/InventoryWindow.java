@@ -45,6 +45,7 @@ public class InventoryWindow extends VBox{
     private Label lblProductField;
     private TextField txtProductField;
     private Button btnSearchProduct;
+    private Button btnZeroProuctSearch;
 
     public InventoryWindow() {
         super();
@@ -53,8 +54,10 @@ public class InventoryWindow extends VBox{
         this.txtProductField=new TextField();
         createBtnCargar();
         createBtnSearch();
+        createBtnZeroSearch();
         this.controller=new InventoryController();
         createTablaInventario();
+        updateInventoryTable();
         this.fileChooser=new FileChooser();
         this.fileChooser.setTitle("Seleccionar Archivo a cargar");
         this.fileChooser.getExtensionFilters().add(new ExtensionFilter("Excel FIles", "*.xls"));
@@ -85,6 +88,7 @@ public class InventoryWindow extends VBox{
             alert.setContentText("El archivo seleccionado es: " + InventoryWindow.this.fileSelected.getAbsolutePath());
             //updateInventoryTable();
             createTablaInventario();
+            updateInventoryTable();
             alert.showAndWait();            
         });
         
@@ -144,7 +148,25 @@ public class InventoryWindow extends VBox{
         TableColumn<Inventory, String> indicador1 = new TableColumn<>("Indicador1");
         indicador1.setCellValueFactory(cellData-> {            
             return new SimpleStringProperty(String.valueOf(cellData.getValue().getIndicador1()));
-        });        
+        });
+
+        indicador1.setCellFactory(col-> new TableCell<>(){
+        @Override
+        protected void updateItem(String item, boolean empty) {
+            if(!empty) {
+                Double value = Double.valueOf(item);            
+                super.updateItem(item,  empty);
+                setText(item);
+                if (CompareDoubleValue.isNegative(value)){                
+                    setTextFill(Color.BLUE);
+                    setStyle("-fx-background-color: #ffcccc;");
+                } else{
+                    setTextFill(Color.GREEN);
+                }
+            }                   
+          }
+        });
+
         
         
         TableColumn<Inventory, String> mes = new TableColumn<>("Mes");
@@ -170,6 +192,7 @@ public class InventoryWindow extends VBox{
     private HBox createButtonBox() {
         HBox boxButtons = new HBox();
         boxButtons.getChildren().add(this.btnCargar);
+        boxButtons.getChildren().add(this.btnZeroProuctSearch);
         boxButtons.setSpacing(15);
         return boxButtons;
     }
@@ -182,13 +205,14 @@ public class InventoryWindow extends VBox{
         boxSearch.setSpacing(15);
         return boxSearch;
     }
+         
     
     private void createBtnSearch() {
         this.btnSearchProduct=new Button("Buscar x Producto");
         this.btnSearchProduct.setOnAction((ActionEvent action) -> {            
-            if (this.txtProductField!=null && !this.txtProductField.getText().isBlank() && !this.txtProductField.getText().isEmpty()) {
+            if (this.txtProductField!=null && !this.txtProductField.getText().isBlank() && !this.txtProductField.getText().isEmpty()) {                
                 updateInventoryTableByProduct(this.txtProductField.getText());
-            } else {
+            } else {                
                 updateInventoryTable();
             }
         });
@@ -196,12 +220,15 @@ public class InventoryWindow extends VBox{
     }
 
     private void updateInventoryTable() {
-        ObservableList<Inventory> inventario = FXCollections.observableArrayList(controller.getInventoryByDate(LocalDate.now()));        
+        this.tablaInventario.getItems().removeAll();
+        //ObservableList<Inventory> inventario = FXCollections.observableArrayList(controller.getInventoryByDate(LocalDate.now()));        
+        ObservableList<Inventory> inventario = FXCollections.observableArrayList(controller.getAllInventory());        
         this.tablaInventario.setItems(inventario);
-        colorTableRow();
+        this.tablaInventario.refresh();
+        //colorTableRow();
     }
     
-    private void colorTableRow() {
+    /*private void colorTableRow() {
         this.tablaInventario.setRowFactory(tv-> new TableRow<Inventory>() {
             @Override
             protected void updateItem(Inventory inv, boolean empty) {
@@ -212,13 +239,31 @@ public class InventoryWindow extends VBox{
                 }
             }
         });
-    }
+    }*/
 
-    private void updateInventoryTableByProduct(String productName) {        
+    private void updateInventoryTableByProduct(String productName) {
+        this.tablaInventario.getItems().removeAll();
         ObservableList<Inventory> inventario = FXCollections.observableArrayList(controller.getInventoryByProduct(productName+'%'));        
         this.tablaInventario.setItems(inventario);
-        colorTableRow();
+        //colorTableRow();
+        this.tablaInventario.refresh();
         
+    }
+    
+    
+    private void updateInventoryByZeroProduct() {
+        this.tablaInventario.getItems().removeAll();
+        ObservableList<Inventory> inventario = FXCollections.observableArrayList(controller.getInventoryByProductZero());        
+        this.tablaInventario.setItems(inventario);
+        //colorTableRow();
+        this.tablaInventario.refresh();        
+    }
+
+    private void createBtnZeroSearch() {
+        this.btnZeroProuctSearch=new Button("Buscar Productos en Cero");
+        this.btnZeroProuctSearch.setOnAction((ActionEvent action) -> {
+            updateInventoryByZeroProduct();
+        });
     }
     
     

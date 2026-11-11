@@ -55,4 +55,12 @@ public class InventoryController {
         return this.daoInventory.getInventoryByProduct(prodName);
     }
     
+    public List<Inventory> getInventoryByProductZero() {
+        return this.daoInventory.getInventoryProductInZero();
+    }
+    
+    public List<Inventory> getAllInventory() {
+        return this.daoInventory.getAllInventory();
+    }
+    
 }

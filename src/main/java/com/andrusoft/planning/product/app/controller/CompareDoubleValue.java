@@ -11,8 +11,10 @@ package com.andrusoft.planning.product.app.controller;
 public class CompareDoubleValue {
       
     public static boolean isNegative(double d1) {        
-        int valor = Double.compare(d1, 0d);        
-        return (valor<0);
+        int valor = Double.compare(d1, 0d);
+        int entero = (int)d1;
+        int signo = Integer.signum(entero);
+        return (signo==-1);
         
     }
 }

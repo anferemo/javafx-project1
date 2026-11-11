@@ -80,7 +80,7 @@ public class InventoryDAO {
             InventoryMapper invMapper = session.getMapper(InventoryMapper.class);
             return invMapper.getInventoryByDate(fechaCargue);            
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Hubo un error cargando los registros de Inventario: {0}", e.getMessage());
+            logger.log(Level.SEVERE, "Hubo un error cargando los registros de Inventario en getInventoryByCargueDate(): {0}", e.getMessage());
             return Collections.emptyList();
         }
     }
@@ -90,7 +90,28 @@ public class InventoryDAO {
             InventoryMapper invMapper = session.getMapper(InventoryMapper.class);
             return invMapper.getInventoryByProduct(product);
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Hubo un error cargando los registros de Inventario: {0}", e.getMessage());
+            logger.log(Level.SEVERE, "Hubo un error cargando los registros de Inventario en getInventoryByProduct: {0}", e.getMessage());
+            return Collections.emptyList();
+        }
+    }
+    
+    
+    public List<Inventory> getInventoryProductInZero() {
+        try(SqlSession session= createSession()) {
+            InventoryMapper invMapper = session.getMapper(InventoryMapper.class);
+            return invMapper.getInventoryZeroProducts();
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Hubo un error cargando los registros de Inventario en getInventoryProductInZero(): {0}", e.getMessage());
+            return Collections.emptyList();
+        }
+    }
+    
+    public List<Inventory> getAllInventory() {
+        try(SqlSession session= createSession()) {
+            InventoryMapper invMapper = session.getMapper(InventoryMapper.class);
+            return invMapper.getAllInventory();
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Hubo un error cargando los registros de Inventario en getInventoryProductInZero(): {0}", e.getMessage());
             return Collections.emptyList();
         }
     }

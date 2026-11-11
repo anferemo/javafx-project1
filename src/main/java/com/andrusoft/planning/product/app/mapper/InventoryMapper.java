@@ -81,4 +81,42 @@ public interface InventoryMapper {
         @Result(column = "mes", property = "mes", jdbcType = JdbcType.DOUBLE)
     })
     List<Inventory> getInventoryByProduct(String nombreProducto);
+    
+    
+    @Select({        
+        "select * from inventory where indicador_1 < 0 order by producto asc, fecha_cargue asc"    
+    })
+    @Results({
+        @Result(column = "fecha_cargue", property = "fechaCarga", jdbcType = JdbcType.DATE),
+        @Result(column = "referencia", property = "referencia", jdbcType = JdbcType.DOUBLE),
+        @Result(column = "producto", property = "nombreProducto", jdbcType = JdbcType.VARCHAR),
+        @Result(column = "tamano_lote", property = "tamanoLote", jdbcType = JdbcType.DOUBLE),
+        @Result(column = "existencia", property = "existencia", jdbcType = JdbcType.DOUBLE),
+        @Result(column = "inv_minimo", property = "inventarioMinimo", jdbcType = JdbcType.DOUBLE),
+        @Result(column = "expor", property = "expor", jdbcType = JdbcType.DOUBLE),
+        @Result(column = "ace", property = "ace", jdbcType = JdbcType.DOUBLE),
+        @Result(column = "programacion", property = "programacion", jdbcType = JdbcType.DOUBLE),
+        @Result(column = "indicador_1", property = "indicador1", jdbcType = JdbcType.DOUBLE),
+        @Result(column = "mes", property = "mes", jdbcType = JdbcType.DOUBLE)
+    })
+    List<Inventory> getInventoryZeroProducts();
+    
+    
+    @Select({
+        "select * from inventory order by fecha_cargue desc, producto asc"
+    })
+    @Results({
+        @Result(column = "fecha_cargue", property = "fechaCarga", jdbcType = JdbcType.DATE),
+        @Result(column = "referencia", property = "referencia", jdbcType = JdbcType.DOUBLE),
+        @Result(column = "producto", property = "nombreProducto", jdbcType = JdbcType.VARCHAR),
+        @Result(column = "tamano_lote", property = "tamanoLote", jdbcType = JdbcType.DOUBLE),
+        @Result(column = "existencia", property = "existencia", jdbcType = JdbcType.DOUBLE),
+        @Result(column = "inv_minimo", property = "inventarioMinimo", jdbcType = JdbcType.DOUBLE),
+        @Result(column = "expor", property = "expor", jdbcType = JdbcType.DOUBLE),
+        @Result(column = "ace", property = "ace", jdbcType = JdbcType.DOUBLE),
+        @Result(column = "programacion", property = "programacion", jdbcType = JdbcType.DOUBLE),
+        @Result(column = "indicador_1", property = "indicador1", jdbcType = JdbcType.DOUBLE),
+        @Result(column = "mes", property = "mes", jdbcType = JdbcType.DOUBLE)
+    })
+    List<Inventory> getAllInventory();
 }
